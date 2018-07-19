@@ -8,23 +8,28 @@ import javax.swing.border.EmptyBorder;
 
 import Model.Directory;
 import Model.Node;
+import Model.Warehouse;
 
 import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import java.awt.Font;
+import javax.swing.JSeparator;
 
 public class DirectoryViewer extends JFrame {
 
-	private JPanel contentPane;
+	protected JPanel contentPane;
 	private JTextField addField;
 	private JTextField removeField;
 	private JTextField findField;
+	protected JPanel panel_2;
+	protected JFrame openedWarehouse;
 
 	/**
 	 * Launch the application.
@@ -39,13 +44,17 @@ public class DirectoryViewer extends JFrame {
 		Directory l2 = new Directory("l2");
 		Node nl1 = new Node(l1,ccanspa); 
 		Node nl2 = new Node(l2,ccanspa); 
-		Directory w1 = new Directory("w1"); 
+		char[] dir = {'u','r','u','l','d'};
+		int[] mag = {100 , 200,100,300,200};
+		Warehouse w1 = new Warehouse("w1",dir,mag); 
 		Directory w2 = new Directory("w2"); 
 		Directory w3 = new Directory("w3"); 
 		Node nw1 = new Node(w1,nl1); 
 		Node nw2 = new Node(w2,nl2); 
 		Node nw3 = new Node(w3,nl2); 
-
+		;
+		//Warehouse w = new Warehouse("CanadaHouse",dir,mag);
+		//Node n = new Node(w);
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -59,16 +68,31 @@ public class DirectoryViewer extends JFrame {
 		});
 	}
 
+	public void openNewViewer(Node n)
+	{
+
+		if(openedWarehouse != null)
+		{
+			openedWarehouse.dispose();
+		}
+		DirectoryViewer frame = new DirectoryViewer(n);
+		frame.setVisible(true);
+		setVisible(false);
+		dispose();
+	
+
+	}
 	/**
 	 * Create the frame.
 	 */
 	public DirectoryViewer(Node n) {
+		setTitle(n.getData().getName());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 950, 300);
+		setBounds(100, 100, 1425, 450);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(new GridLayout(1, 2, 0, 0));
+		contentPane.setLayout(new GridLayout(1, 2, 10, 0));
 
 		JPanel panel_1 = new JPanel();
 		contentPane.add(panel_1);
@@ -79,11 +103,12 @@ public class DirectoryViewer extends JFrame {
 		panel.setLayout(new GridLayout(1, n.getChildren().size(), 0, 0));
 
 		JLabel lblNewLabel = new JLabel(n.getData().getName());
-		lblNewLabel.setFont(new Font("Dialog", Font.BOLD, 20));
+		lblNewLabel.setFont(new Font("Dialog", Font.BOLD, 35));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		panel_1.add(lblNewLabel, BorderLayout.NORTH);
-
-		JPanel panel_2 = new JPanel();
+		UIManager.put("Label.font", new Font("Dialog", Font.BOLD, 20));
+		UIManager.put("Button.font", new Font("Dialog", Font.BOLD, 20));
+		panel_2 = new JPanel();
 		contentPane.add(panel_2);
 		panel_2.setLayout(new GridLayout(0, 3, 0, 0));
 
@@ -100,9 +125,8 @@ public class DirectoryViewer extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				Directory d = new Directory(addField.getText());
 				Node no = new Node(d,n);
-				DirectoryViewer frame = new DirectoryViewer(n);
-				frame.setVisible(true);
-				setVisible(false);
+				openNewViewer(no);
+
 			}
 		});
 
@@ -125,9 +149,8 @@ public class DirectoryViewer extends JFrame {
 					if(no.getData().getName().equals(removeField.getText()))
 					{
 						it.remove();
-						DirectoryViewer frame = new DirectoryViewer(n);
-						frame.setVisible(true);
-						setVisible(false);
+						openNewViewer(no);
+
 					}
 				}
 			}
@@ -143,37 +166,33 @@ public class DirectoryViewer extends JFrame {
 
 		JButton findButton = new JButton("Submit");
 		panel_2.add(findButton);
-		
+
 		JLabel lblUpOneDirectory = new JLabel("Up one Directory");
 		panel_2.add(lblUpOneDirectory);
-		
+
 		JPanel panel_4 = new JPanel();
 		panel_2.add(panel_4);
-		
+
 		JButton button = new JButton("Go");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				DirectoryViewer frame = new DirectoryViewer(n.getParent());
-				frame.setVisible(true);
-				setVisible(false);
-				dispose();
+				openNewViewer(n.getParent());
+
 			}
 		});
 		panel_2.add(button);
-		
+
 		JLabel lblNewLabel_2 = new JLabel("Home");
 		panel_2.add(lblNewLabel_2);
-		
+
 		JPanel panel_3 = new JPanel();
 		panel_2.add(panel_3);
-		
+
 		JButton btnNewButton = new JButton("Go");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				DirectoryViewer frame = new DirectoryViewer(n.getRoot());
-				frame.setVisible(true);
-				setVisible(false);
-				dispose();
+				openNewViewer(n.getRoot());
+
 			}
 		});
 		panel_2.add(btnNewButton);
@@ -184,10 +203,8 @@ public class DirectoryViewer extends JFrame {
 			childButton.addActionListener(new ActionListener() {
 				private int anonVar;
 				public void actionPerformed(ActionEvent arg0) {
-					DirectoryViewer frame = new DirectoryViewer(n.getChildren().get(anonVar));
-					frame.setVisible(true);
-					setVisible(false);
-					dispose();
+					openNewViewer(n.getChildren().get(anonVar));
+
 
 				}
 				private ActionListener init(int var){
@@ -198,6 +215,32 @@ public class DirectoryViewer extends JFrame {
 			panel.add(childButton);
 		}
 
+		if(n.getData() instanceof Warehouse)
+		{
+			panel_2.setLayout(new GridLayout(0, 3, 0, 0));
+
+			JLabel lblNewLabel_4 = new JLabel("See Warehouse");
+			panel_2.add(lblNewLabel_4);
+
+
+			panel_2.add(new JPanel());
+
+			JButton seeButton = new JButton("Open");
+			seeButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if(openedWarehouse != null)
+					{
+						openedWarehouse.dispose();
+					}
+					WarehouseViewer frame = new WarehouseViewer((Warehouse) (n.getData()));
+					frame.setVisible(true);
+					openedWarehouse = frame;
+
+
+				}
+			});
+			panel_2.add(seeButton);
+		}
 
 	}
 

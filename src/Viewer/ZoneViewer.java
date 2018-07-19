@@ -1,4 +1,5 @@
 package Viewer;
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -13,7 +14,19 @@ public class ZoneViewer extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					ZoneViewer frame = new ZoneViewer();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
 	/**
 	 * Create the frame.
 	 */

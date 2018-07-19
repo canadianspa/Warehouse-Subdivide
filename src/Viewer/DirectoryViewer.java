@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 import Model.Directory;
 import Model.Node;
 import Model.Warehouse;
+import Model.Zone;
 
 import java.awt.GridLayout;
 import javax.swing.JLabel;
@@ -16,6 +17,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
@@ -38,21 +40,35 @@ public class DirectoryViewer extends JFrame {
 
 
 
-		Directory canSpa = new Directory("Canadian Spa"); 
+		Directory canSpa = new Directory("Canadian Spa Company"); 
 		Node ccanspa = new Node(canSpa); 
-		Directory l1 = new Directory("l1");
-		Directory l2 = new Directory("l2");
+		Directory l1 = new Directory("Canada House");
+		Directory l2 = new Directory("Verran");
 		Node nl1 = new Node(l1,ccanspa); 
 		Node nl2 = new Node(l2,ccanspa); 
 		char[] dir = {'u','r','u','l','d'};
 		int[] mag = {100 , 200,100,300,200};
-		Warehouse w1 = new Warehouse("w1",dir,mag); 
-		Directory w2 = new Directory("w2"); 
-		Directory w3 = new Directory("w3"); 
+		char[] dir2 = {'u','r','d','l','d'};
+		int[] mag2 = {300 , 500,100,100,300};
+		int[] zoneLocs = {150,200,301,400};
+		Warehouse w1 = new Warehouse("Below Customer Service",dir,mag,zoneLocs); 
+		Warehouse w2 = new Warehouse("Below Sales",dir2,mag2,zoneLocs); 
+		Warehouse w3 = new Warehouse("Parts",dir,mag,zoneLocs); 
 		Node nw1 = new Node(w1,nl1); 
-		Node nw2 = new Node(w2,nl2); 
-		Node nw3 = new Node(w3,nl2); 
-		;
+		Node nw2 = new Node(w2,nl1); 
+		Node nw3 = new Node(w3,nl1);
+	
+		Zone z1 = new Zone("A1");
+		Zone z2 = new Zone("A2");
+		Zone z3 = new Zone("B1");
+		Zone z4 = new Zone("D1");
+		
+		Node nz1 = new Node(z1,nw1);
+		Node nz2 = new Node(z2,nw1);
+		Node nz3 = new Node(z3,nw1);
+		Node nz4 = new Node(z4,nw1);
+		
+		
 		//Warehouse w = new Warehouse("CanadaHouse",dir,mag);
 		//Node n = new Node(w);
 
@@ -232,7 +248,13 @@ public class DirectoryViewer extends JFrame {
 					{
 						openedWarehouse.dispose();
 					}
-					WarehouseViewer frame = new WarehouseViewer((Warehouse) (n.getData()));
+					ArrayList<String> zoneNames = new ArrayList<String>();
+					for(Node z: n.getChildren())
+					{
+						zoneNames.add(z.getData().getName());
+						
+					}
+					WarehouseViewer frame = new WarehouseViewer((Warehouse) (n.getData()),zoneNames);
 					frame.setVisible(true);
 					openedWarehouse = frame;
 

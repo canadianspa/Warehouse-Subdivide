@@ -50,7 +50,7 @@ public class DirectoryViewer extends JFrame {
 		int[] mag = {100 , 200,100,300,200};
 		char[] dir2 = {'u','r','d','l','d'};
 		int[] mag2 = {300 , 500,100,100,300};
-		int[] zoneLocs = {150,200,301,400};
+		int[][] zoneLocs = {{150,200},{50,150},{150,300},{200,200}};
 		Warehouse w1 = new Warehouse("Below Customer Service",dir,mag,zoneLocs); 
 		Warehouse w2 = new Warehouse("Below Sales",dir2,mag2,zoneLocs); 
 		Warehouse w3 = new Warehouse("Parts",dir,mag,zoneLocs); 

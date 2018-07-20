@@ -7,20 +7,20 @@ public class Warehouse extends Directory {
 	
 	char[] directions;
 	int[] magnitude;
-	int[] zoneLocs;
+	int[][] zoneLocs;
 	
-	public Warehouse(String name, char[] directions, int[] magnitude, int[] zoneLocs) {
+	public Warehouse(String name, char[] directions, int[] magnitude, int[][] zoneLocs) {
 		super(name);
 		this.directions = directions;
 		this.magnitude = magnitude;
 		this.zoneLocs = zoneLocs;
 	}
 
-	public int[] getZoneLocs() {
+	public int[][] getZoneLocs() {
 		return zoneLocs;
 	}
 
-	public void setZoneLocs(int[] zoneLocs) {
+	public void setZoneLocs(int[][] zoneLocs) {
 		this.zoneLocs = zoneLocs;
 	}
 

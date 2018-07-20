@@ -1,6 +1,11 @@
 package Viewer;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -21,12 +26,14 @@ public class WarehouseDesign extends JPanel {
 		super();
 		this.w = w;
 		this.zoneNames = zoneNames;
+		setBackground(Color.white);
 	}
 
 
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
+		Graphics2D g2D = (Graphics2D) g;    
 		//find highest left right up and down, to allow me to normalise 
 		double maxr = 0; 
 		double maxl = 0;
@@ -89,81 +96,58 @@ public class WarehouseDesign extends JPanel {
 		double largerFactor = Math.max(xSizeFactor, ySizeFactor);
 		largerFactor *= 1.1;
 
-		int lasty = (int) ((maxu / (maxd + maxu)) * this.getHeight()) - 10;
-		int  lastx = (int) ((maxl / (maxr + maxl)) * this.getWidth()) + 10;
+		int firsty = (int) ((maxu / (maxd + maxu)) * this.getHeight()) - 10;
+		int  firstx = (int) ((maxl / (maxr + maxl)) * this.getWidth()) + 10;
 
 		int drawn = 0;
 		int toDraw = 0;
-		int countZonePainted =0;
 
+		
+	
+		g2D.setColor(Color.black);
+		
+		int lastx = firstx;
+		int lasty = firsty;
 		//draw the normalised shape
 		for(int i = 0; i < w.getMagnitude().length; i ++)
 		{
 			char dir = w.getDirections()[i];
 			int mag = w.getMagnitude()[i];
-			//draw zones on
 			toDraw += mag;
 
-
-			ArrayList<Double> drawRatioBuffer = new ArrayList<Double>();
-			for(int z : w.getZoneLocs())
-			{
-				if(z > drawn && z <= toDraw)
-				{
-					drawRatioBuffer.add(((double) z - (double) drawn) / ((double) toDraw - (double) drawn));
-				}
-			}
 			mag /= largerFactor;
 
-
+			g2D.setStroke(new BasicStroke(8F));
 			if(dir == 'u')
 			{
-				g.drawLine(lastx, lasty, lastx, lasty - mag);
-				for(double d: drawRatioBuffer)
-				{
-					g.drawString(zoneNames.get(countZonePainted), lastx,  lasty - (int) (mag*d));
-					countZonePainted ++;
-				}
+				g2D.drawLine(lastx, lasty, lastx, lasty - mag);
 				lasty = lasty - mag;
 			}
 			else if(dir == 'd')
 			{
-				g.drawLine(lastx, lasty, lastx, lasty + mag);
-				for(double d: drawRatioBuffer)
-				{
-
-					g.drawString(zoneNames.get(countZonePainted), lastx,  lasty + (int) (mag*d));
-					countZonePainted ++;
-
-				}
+				g2D.drawLine(lastx, lasty, lastx, lasty + mag);			
 				lasty = lasty + mag;
 			}
 			else if(dir == 'l')
 			{
-				g.drawLine(lastx, lasty, lastx - mag, lasty);
-				for(double d: drawRatioBuffer)
-				{
-
-					g.drawString(zoneNames.get(countZonePainted), lastx - (int) (mag*d),  lasty );
-					countZonePainted ++;
-
-				}
+				g2D.drawLine(lastx, lasty, lastx - mag, lasty);
 				lastx = lastx - mag;
 			}
 			else if(dir == 'r')
 			{
-				g.drawLine(lastx, lasty, lastx + mag, lasty);
-				for(double d: drawRatioBuffer)
-				{
-				
-					g.drawString(zoneNames.get(countZonePainted), lastx + (int) (mag*d),  lasty );
-					countZonePainted ++;
-
-				}
+				g2D.drawLine(lastx, lasty, lastx + mag, lasty);
 				lastx = lastx + mag;
 			}
 			drawn = toDraw;
 
+		}
+
+		//draw zones
+		g2D.setColor(Color.red);
+		for(int i = 0; i < w.getZoneLocs().length; i ++)
+		{
+			g2D.setFont(new Font("Dialog", Font.BOLD, 25));
+			g2D.drawString(zoneNames.get(i), firstx + (int) (w.getZoneLocs()[i][0] / largerFactor)  , firsty - (int) (w.getZoneLocs()[i][1] / largerFactor));
 		}
 
 	}
